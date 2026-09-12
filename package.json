@@ -1,0 +1,49 @@
+{
+  "name": "sketchup-ai-toolkit",
+  "version": "0.3.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "Multi-version SketchUp MCP and AI modeling skills for landscape architecture and buildings.",
+  "license": "Apache-2.0",
+  "author": "zhanglinqi",
+  "bin": {
+    "sketchup-ai-mcp": "./src/mcp-server.mjs"
+  },
+  "files": [
+    "src/",
+    "schema/",
+    "config/",
+    "sketchup_plugin/",
+    "skills/",
+    "scripts/",
+    "docs/",
+    "examples/",
+    "LICENSE",
+    "NOTICE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md"
+  ],
+  "scripts": {
+    "mcp": "node src/mcp-server.mjs",
+    "cli": "node src/cli.mjs",
+    "setup": "node scripts/setup.mjs",
+    "skills:install": "node scripts/install-skills.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:ruby": "node scripts/test-ruby.mjs",
+    "check": "node scripts/check.mjs",
+    "plugin:package": "node scripts/package-plugin.mjs",
+    "source:package": "node scripts/package-source.mjs",
+    "doctor": "node scripts/doctor.mjs"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "dependencies": {
+    "acorn": "^8.16.0",
+    "ajv": "^8.20.0",
+    "sharp": "^0.35.4"
+  },
+  "overrides": {
+    "fast-uri": "3.1.6"
+  }
+}

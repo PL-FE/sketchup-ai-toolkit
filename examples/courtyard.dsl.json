@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "units": "mm",
+  "operations": [
+    { "op": "material", "name": "courtyard_grass", "color": "#728B52" },
+    { "op": "material", "name": "courtyard_paving", "color": "#C5C1B6" },
+    { "op": "material", "name": "courtyard_planter_wall", "color": "#AAA394" },
+    { "op": "material", "name": "courtyard_soil", "color": "#66503B" },
+    { "op": "material", "name": "courtyard_timber", "color": "#96734C" },
+    { "op": "box", "name": "courtyard_ground", "origin": [0, 0, -100], "size": [12000, 9000, 100], "material": "courtyard_grass" },
+    { "op": "box", "name": "courtyard_path", "origin": [0, 3750, 0], "size": [12000, 1500, 60], "material": "courtyard_paving" },
+    { "op": "box", "name": "courtyard_pergola_platform", "origin": [7200, 5250, 0], "size": [4000, 3000, 60], "material": "courtyard_paving" },
+    { "op": "box", "name": "courtyard_planter_south", "origin": [1500, 1200, 0], "size": [3000, 150, 450], "material": "courtyard_planter_wall" },
+    { "op": "box", "name": "courtyard_planter_north", "origin": [1500, 2650, 0], "size": [3000, 150, 450], "material": "courtyard_planter_wall" },
+    { "op": "box", "name": "courtyard_planter_west", "origin": [1500, 1350, 0], "size": [150, 1300, 450], "material": "courtyard_planter_wall" },
+    { "op": "box", "name": "courtyard_planter_east", "origin": [4350, 1350, 0], "size": [150, 1300, 450], "material": "courtyard_planter_wall" },
+    { "op": "box", "name": "courtyard_planter_soil", "origin": [1650, 1350, 0], "size": [2700, 1300, 350], "material": "courtyard_soil" },
+    { "op": "box", "name": "courtyard_pergola_post_sw", "origin": [7500, 5550, 60], "size": [150, 150, 2700], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_post_se", "origin": [10500, 5550, 60], "size": [150, 150, 2700], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_post_nw", "origin": [7500, 7750, 60], "size": [150, 150, 2700], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_post_ne", "origin": [10500, 7750, 60], "size": [150, 150, 2700], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_beam_south", "origin": [7350, 5550, 2760], "size": [3450, 150, 200], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_beam_north", "origin": [7350, 7750, 2760], "size": [3450, 150, 200], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_slat_01", "origin": [7500, 5400, 2960], "size": [100, 2700, 120], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_slat_02", "origin": [8100, 5400, 2960], "size": [100, 2700, 120], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_slat_03", "origin": [8700, 5400, 2960], "size": [100, 2700, 120], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_slat_04", "origin": [9300, 5400, 2960], "size": [100, 2700, 120], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_slat_05", "origin": [9900, 5400, 2960], "size": [100, 2700, 120], "material": "courtyard_timber" },
+    { "op": "box", "name": "courtyard_pergola_slat_06", "origin": [10500, 5400, 2960], "size": [100, 2700, 120], "material": "courtyard_timber" }
+  ]
+}

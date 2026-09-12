@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "2020": {
+      "sketchup_major": 20,
+      "minimum_ruby": "2.5.5",
+      "native_pbr": false,
+      "native_environments": false,
+      "validation": "pending-host-test"
+    },
+    "2026": {
+      "sketchup_major": 26,
+      "minimum_ruby": "2.5.5",
+      "native_pbr": true,
+      "native_environments": true,
+      "validation": "pending-host-test"
+    }
+  }
+}

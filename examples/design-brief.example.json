@@ -1,0 +1,26 @@
+{
+  "brief": {
+    "instruction": "教学示例：假设用户明确给定 12 m × 9 m 庭院，希望按参考图做可编辑概念模型。先确认下列缺失与建议参数，再开始实时建模；本文件不是实际用户确认记录。",
+    "units": "m",
+    "reference_images": ["example-reference:courtyard-plan.png"],
+    "constraints": [
+      "示例图像标识不对应随包提供的文件；实际项目应先查看真实图片。",
+      "只创建独立的新建根组，保留已有模型。",
+      "先检查白模范围、比例与标高，再进行构件和材质细化。",
+      "任何未显示构造均先列为缺失或待确认建议；不默认为施工设计。"
+    ],
+    "parameters": [
+      {"name":"site_length","value":12,"unit":"m","source":"user","status":"confirmed","required":true,"notes":"仅在此虚构教学场景中，假设用户明确给定此尺寸。实际使用时替换为真实会话记录。"},
+      {"name":"site_width","value":9,"unit":"m","source":"user","status":"confirmed","required":true,"notes":"仅为教学场景中假设已给定的尺寸。"},
+      {"name":"reference_distance","value":null,"unit":"m","source":"image","status":"missing","required":true,"notes":"需要指出参考图上对应哪一段真实距离，用于尺寸标定。"},
+      {"name":"model_origin","value":[0,0,0],"unit":"m","source":"assumed","status":"pending","required":true,"notes":"建议以场地西南角为局部原点，需用户确认方位和定位。"},
+      {"name":"base_elevation","value":0,"unit":"m","source":"assumed","status":"pending","required":true,"notes":"建议以场地入口为相对零标高；0 是建议值，不代表缺失。"},
+      {"name":"terrain_height_difference","value":null,"unit":"m","source":"user","status":"missing","required":true,"notes":"缺少地形资料；请提供高程或明确确认按平场概念建模。"},
+      {"name":"path_width","value":1.5,"unit":"m","source":"assumed","status":"pending","required":true,"notes":"仅为概念设计建议，未经图片实测或用户确认，不代表通行规范结论。"},
+      {"name":"pergola_footprint","value":[4,3],"unit":"m","source":"assumed","status":"pending","required":true,"notes":"廊架长宽的概念建议，实际图片或尺寸可修改此值。"},
+      {"name":"pergola_post_height","value":2.7,"unit":"m","source":"assumed","status":"pending","required":true,"notes":"图片未确定的高度建议，必须经用户确认。"},
+      {"name":"pergola_post_section","value":[0.15,0.15],"unit":"m","source":"assumed","status":"pending","required":true,"notes":"造型表达用截面建议，不是结构验算结论。"},
+      {"name":"foundation_detail","value":null,"source":"assumed","status":"missing","required":false,"notes":"此概念阶段明确省略基础细节；不得自动补成施工基础。"}
+    ]
+  }
+}
