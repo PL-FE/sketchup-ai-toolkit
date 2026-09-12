@@ -1,3 +1,4 @@
+import { assessSceneCoverage } from './scene-reconstruction.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -130,12 +131,20 @@ export async function compileReviewedPartGraph(options = {}) {
   if (documents.part_graph) blockers.push(...partGraphReviewBlockers(documents.part_graph));
   blockers.push(...identityAlignmentBlockers(documents));
 
+  let sceneCoverage = null;
+  if (documents.mcp_brief?.scene_reconstruction && documents.part_graph) {
+    try {
+      sceneCoverage = assessSceneCoverage(documents.mcp_brief.scene_reconstruction, documents.part_graph);
+      blockers.push(...sceneCoverage.blockers);
+    } catch (error) { blockers.push(`scene_reconstruction_invalid:${error.message}`); }
+  }
   let dsl = null;
   if (unique(blockers).length === 0) {
     try {
       dsl = compilePartGraphToSketchUpDsl(documents.part_graph, documents.profile, {
         repoRoot: REPO_ROOT,
         partGraphPath: paths.part_graph,
+        sceneReconstruction: documents.mcp_brief.scene_reconstruction,
         profilePath: paths.profile
       });
     } catch (error) {
@@ -148,6 +157,7 @@ export async function compileReviewedPartGraph(options = {}) {
   const report = {
     version: 1,
     kind: 'image_structured_part_graph_compile_gate',
+    scene_coverage: sceneCoverage,
     ok: allowed,
     blocked: !allowed,
     preview_only: true,

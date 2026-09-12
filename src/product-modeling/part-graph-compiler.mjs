@@ -1,3 +1,4 @@
+import { assessSceneCoverage } from '../scene-reconstruction.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -60,6 +61,8 @@ export async function compilePartGraphFiles({ profilePath, partGraphPath, repoRo
 export function compilePartGraphToSketchUpDsl(partGraph = {}, profile = {}, options = {}) {
   validateProfileMatch(partGraph, profile);
   enforceCompileGate(partGraph, profile);
+  const sceneCoverage = assessSceneCoverage(options.sceneReconstruction, partGraph);
+  if (sceneCoverage.blockers.length) throw new Error(sceneCoverage.blockers.join('; '));
   const repoRoot = path.resolve(options.repoRoot || DEFAULT_REPO_ROOT);
   const context = buildContext(partGraph, profile, { ...options, repoRoot });
   const operations = [];
@@ -352,6 +355,7 @@ function compilePart(part, context) {
     name: part.name,
     ...cloneJson(part.shape.parameters || {})
   };
+  enforceSignageText(part, operation);
   if (part.material && operation.material === undefined) operation.material = part.material;
   operation.qa = qaForPart(part);
 
@@ -360,6 +364,30 @@ function compilePart(part, context) {
     operations.push(compileFeatureIntent(part, feature));
   }
   return operations;
+}
+
+// Semantic opt-in: preserve legacy block markers for unrelated product labels.
+function enforceSignageText(part, operation) {
+  if (!['brand_text', 'shop_name', 'signage_text'].includes(part.role || part.type)) return;
+  if (['mesh', 'profile_extrude', 'prism'].includes(operation.op)) return; // Traced custom glyph contours.
+  if (!['text_3d', 'text_emboss', 'text_engrave'].includes(operation.op)) {
+    throw new Error(`Signage ${part.id}: use real text or traced glyph geometry, not a placeholder; keep the signboard in a separate part`);
+  }
+  if (typeof operation.text !== 'string' || !operation.text.trim() || /[□\uFFFD]/u.test(operation.text)) {
+    throw new Error(`Signage ${part.id}: readable source text is required; unresolved lettering must remain a review item`);
+  }
+  if (typeof operation.font !== 'string' || !operation.font.trim()) {
+    throw new Error(`Signage ${part.id}: select an explicit host font supporting the source characters`);
+  }
+  if (operation.op !== 'text_3d') {
+    const mode = operation.mode ?? operation.text_mode ?? operation.textMode;
+    const normalized = typeof mode === 'string' ? mode.trim().toLowerCase().replace(/[ -]/g, '_') : mode;
+    if (operation.outline === false || (mode !== undefined && !['font_outline', 'text_3d', 'native_text'].includes(normalized))) {
+      throw new Error(`Signage ${part.id}: block/marker lettering cannot satisfy signage fidelity; use font_outline`);
+    }
+    operation.mode = 'font_outline';
+    operation.outline = true;
+  }
 }
 
 function compileFeatureIntent(part, feature) {

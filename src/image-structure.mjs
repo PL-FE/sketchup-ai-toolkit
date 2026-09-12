@@ -1,3 +1,4 @@
+import { validateSceneReconstruction, assessSceneCoverage } from './scene-reconstruction.mjs';
 import Ajv2020 from 'ajv/dist/2020.js';
 import { validateImageGeometry } from './image-structure-geometry.mjs';
 import fs from 'node:fs/promises';
@@ -68,6 +69,8 @@ export function mergeImageUnderstanding(inputs, previous = null) {
     const candidate_id = sha256Canonical(core);
     candidates.push({...core,candidate_id}); active[id] = candidate_id;
   }
+  const scene = copy(inputs.scene_reconstruction ?? previous?.scene_reconstruction);
+  if (scene) validateSceneReconstruction(scene);
   const assumptions = copy(inputs.assumptions ?? previous?.assumptions ?? []);
   if (!Array.isArray(assumptions)) fail('assumptions must be an array');
   for (const assumption of assumptions) {
@@ -77,12 +80,13 @@ export function mergeImageUnderstanding(inputs, previous = null) {
   }
   return {version:'image-understanding.v1', image_handle:source, domain:inputs.domain ?? previous.domain, scale_mode:scale,
     scale_reference:copy(inputs.scale_reference ?? previous?.scale_reference ?? null), candidates,active_instances:active,
-    assumptions, review_history:copy(previous?.review_history || []), diagnostics:copy(previous?.diagnostics || []),
+    ...(scene ? {scene_reconstruction:scene} : {}), assumptions, review_history:copy(previous?.review_history || []), diagnostics:copy(previous?.diagnostics || []),
     unknowns:copy(inputs.unknowns ?? previous?.unknowns ?? []), part_graph:copy(inputs.part_graph ?? previous?.part_graph ?? null)};
 }
 
 export function compileImageModel(understanding) {
   const graph = understanding.part_graph;
+  if (understanding.domain === 'building' && !understanding.scene_reconstruction) fail('Building image modeling requires scene_reconstruction: inventory all requested masses, streets and identity details before complete_model');
   fields(graph,['version','profile_id','units','parts','roots','materials','contacts'],'part_graph');
   if (![1,2].includes(graph.version ?? 1) || (graph.units && graph.units !== 'mm')) fail('PartGraph requires version 1 or 2 and nominal mm units');
   if (!Array.isArray(graph.parts) || !graph.parts.length || graph.parts.length > 1500) fail('PartGraph must contain 1–1500 explicit parts');
@@ -131,7 +135,7 @@ export function compileImageModel(understanding) {
     for(const ref of normalized.roots||[])visit(ref.part_id);
     if(parts.some(p=>!reached.has(p.id))) fail('PartGraph has unreachable parts; complete output cannot drop them');
   }
-  const document=compilePartGraphToSketchUpDsl(normalized,{profile_id:'image-neutral-v1',units:'mm',materials},{includeReset:false});
+  const document=compilePartGraphToSketchUpDsl(normalized,{profile_id:'image-neutral-v1',units:'mm',materials},{includeReset:false,sceneReconstruction:understanding.scene_reconstruction});
   const contacts=graph.contacts || [];
   if (!Array.isArray(contacts) || contacts.length>5000) fail('contacts must contain at most 5000 explicit pairs');
   for (const contact of contacts) {
@@ -147,7 +151,7 @@ export function compileImageModel(understanding) {
   validateExpertDocument(document,{maxOperations:1500,maxOutputBytes:2*1024*1024});
   prepareTaskOwnedCreationDsl(JSON.stringify(document),{taskId:'task_00000000-0000-0000-0000-000000000000',iteration:0});
   const geometry_preview=validateImageGeometry(document);
-  return {geometry_preview,version:'image-model-plan.v1',image_handle:understanding.image_handle,part_graph:copy(graph),assumptions:copy(assumptions),scale_mode:understanding.scale_mode,scale_reference:copy(understanding.scale_reference),document,
+  return {scene_coverage:assessSceneCoverage(understanding.scene_reconstruction,normalized), ...(understanding.scene_reconstruction ? {scene_reconstruction:copy(understanding.scene_reconstruction)} : {}), geometry_preview,version:'image-model-plan.v1',image_handle:understanding.image_handle,part_graph:copy(graph),assumptions:copy(assumptions),scale_mode:understanding.scale_mode,scale_reference:copy(understanding.scale_reference),document,
     completeness:'candidate_requires_visual_acceptance',limitations:understanding.unknowns};
 }
 
@@ -193,7 +197,7 @@ export async function prepareImageStructure(gateway,task) {
   const stored={understanding,content_hash,artifact,helpers_completed:[...new Set([...(task.private?.image_structure?.helpers_completed||[]),...methods])],...(plan?{plan,plan_hash:sha256Canonical(plan)}:{})};
   return gateway.taskStore.transition(task.task_id,gaps.length?'awaiting_input':'completed',{reason:gaps.length?'image_goal_missing_input':'image_understanding_available',patch:{
     private:{...current.private,image_structure:stored,bound_image_handles:[...new Set([...(current.private?.bound_image_handles||[]),understanding.image_handle])]},
-    result:{kind:'image_structure',goal,source_understanding:{task_id:task.task_id,artifact_handle:artifact.handle,content_hash},...(plan?{source_image_model:{task_id:task.task_id,artifact_handle:artifact.handle,content_hash},plan_hash:stored.plan_hash,preview:plan}:{}),instance_count:Object.keys(understanding.active_instances).length,diagnostics:understanding.diagnostics,unknowns:understanding.unknowns,goal_gaps:gaps,assumptions:understanding.assumptions,complete_model_delivered:false},
+    result:{kind:'image_structure',goal,source_understanding:{task_id:task.task_id,artifact_handle:artifact.handle,content_hash},...(plan?{source_image_model:{task_id:task.task_id,artifact_handle:artifact.handle,content_hash},plan_hash:stored.plan_hash,preview:plan}:{}),scene_coverage:assessSceneCoverage(understanding.scene_reconstruction),instance_count:Object.keys(understanding.active_instances).length,diagnostics:understanding.diagnostics,unknowns:understanding.unknowns,goal_gaps:gaps,assumptions:understanding.assumptions,complete_model_delivered:false},
     next_action:gaps.length?{action:'submit_task_input',gaps}:plan?{action:'start_agent_task',intent:'create_model',required:['source_image_model','runtime']}:null}});
 }
 
@@ -211,7 +215,7 @@ export async function prepareImageModelCreation(gateway,task) {
   const visit=ops=>ops.forEach(o=>{required.add(o.op);if(o.operations)visit(o.operations);});visit(plan.document.operations);
   const unsupported=[...required].filter(op=>!supported.includes(op));
   if (unsupported.length) fail(`Runtime cannot create these parts: ${unsupported.join(', ')}`);
-  const review={kind:'image_model_review',source_image:plan.image_handle,part_graph:plan.part_graph,assumptions:plan.assumptions,scale_mode:plan.scale_mode,scale_reference:plan.scale_reference,operation_count:plan.document.operations.length,scope:'Create new independently editable parts; source image is not a measurement of hidden geometry.'};
+  const review={kind:'image_model_review',scene_reconstruction:plan.scene_reconstruction,scene_coverage:plan.scene_coverage,source_image:plan.image_handle,part_graph:plan.part_graph,assumptions:plan.assumptions,scale_mode:plan.scale_mode,scale_reference:plan.scale_reference,operation_count:plan.document.operations.length,scope:'Create new independently editable parts; source image is not a measurement of hidden geometry.'};
   const binding={task_id:task.task_id,plan_id:`image-${stored.plan_hash.slice(7,31)}`,plan_hash:stored.plan_hash,model_revision:`new-objects:${task.task_id}`,risk_level:'S2',allowed_operations:[...new Set(plan.document.operations.map(o=>o.op))],review_context_hash:sha256Canonical(review)};
   const challenge=await gateway.bridge.approvalAuthority.createChallenge({taskId:binding.task_id,planId:binding.plan_id,planHash:binding.plan_hash,modelRevision:binding.model_revision,riskLevel:binding.risk_level,allowedOperations:binding.allowed_operations,reviewContext:review,idempotencyKey:`image-model:${task.task_id}:${binding.plan_hash}`});
   const sourceTask=await gateway.taskStore.getTask(task.inputs.source_image_model.task_id,{includePrivate:true});

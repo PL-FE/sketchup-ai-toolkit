@@ -5,6 +5,7 @@
   "type": "object",
   "required": ["version", "object", "images", "views_detected", "missing_views", "quality_report"],
   "properties": {
+    "scene_reconstruction": { "type": "object", "description": "Scene inventory, validated by scene-reconstruction-v1.schema.json at runtime." },
     "version": { "const": 1 },
     "object": {
       "type": "object",

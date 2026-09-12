@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "scene_type",
+    "scope",
+    "completion_mode",
+    "entities",
+    "relations"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "scene_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1200
+    },
+    "scope": {
+      "enum": [
+        "full_scene",
+        "single_subject"
+      ]
+    },
+    "completion_mode": {
+      "enum": [
+        "visible_only",
+        "plausible_complete"
+      ]
+    },
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "kind",
+          "visibility",
+          "provenance",
+          "evidence",
+          "part_ids",
+          "required",
+          "priority"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "kind": {
+            "enum": [
+              "building",
+              "building_group",
+              "mass",
+              "street",
+              "ground",
+              "entrance",
+              "canopy",
+              "railing",
+              "signage",
+              "vegetation",
+              "street_furniture",
+              "detail"
+            ]
+          },
+          "building_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "visibility": {
+            "enum": [
+              "visible",
+              "partial",
+              "unseen"
+            ]
+          },
+          "provenance": {
+            "enum": [
+              "observed",
+              "inferred",
+              "assumed"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "source_region": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "part_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1500,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1200
+            },
+            "uniqueItems": true
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "priority": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 5000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "type",
+          "provenance",
+          "evidence"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          },
+          "type": {
+            "enum": [
+              "adjacent",
+              "connected",
+              "occludes",
+              "behind",
+              "part_of",
+              "must_not_merge"
+            ]
+          },
+          "provenance": {
+            "enum": [
+              "observed",
+              "inferred",
+              "assumed"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          }
+        }
+      }
+    }
+  }
+}

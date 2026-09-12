@@ -13,7 +13,7 @@ description: "Create and revise editable SketchUp models through an available MC
 
 按当前材料只读取必要参考：
 
-- 图片、草图、平面图、现场照片：[图片建模](references/image-modeling.md)。
+- 图片、草图、平面图、现场照片：[图片建模](references/image-modeling.md)。主要店名、品牌字或招牌还原另读[招牌与品牌文字](references/signage.md)。街景、多栋楼或遮挡补全另读[场景清单与补全](references/scene-reconstruction.md)。
 - 场地、地形、园路、种植和景观构筑物：[景观工作流](references/landscape.md)。
 - 建筑体量、楼层、墙体、洞口和屋面：[建筑工作流](references/architecture.md)。
 

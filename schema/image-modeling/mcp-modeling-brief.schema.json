@@ -25,6 +25,7 @@
     "prohibitions"
   ],
   "properties": {
+    "scene_reconstruction": { "type": "object", "description": "Scene inventory, validated by scene-reconstruction-v1.schema.json at runtime." },
     "version": { "const": 1 },
     "kind": { "const": "mcp_modeling_brief" },
     "asset_set_id": { "type": "string", "minLength": 1 },

@@ -98,6 +98,8 @@ node scripts/doctor.mjs --year 2020 --live
 
 ## 图片、尺寸和确认规则
 
+图片场景现在支持 `scene_reconstruction` 清单：区分建筑、建筑组、街道及关键细节，记录邻接/遮挡、图像区域与推断依据。建筑图片的 `complete_model` 路径要求先提交清单；编译会检查必需对象是否落到独立 PartGraph 零件，漏建筑、漏雨棚或漏入口等会报告具体缺项。隐藏区域可以提出类型推断补全，仍保留假设来源和现有审查流程。此功能检查声明的覆盖范围，不是新增自动视觉识别或图生三维神经模型，也不能证明背面真实还原。参见 [场景协议与示例](skills/sketchup-ai-modeling/references/scene-reconstruction.md)。
+
 AI 必须将输入分为用户给定、图片观察、计算推导和设计假设。未知关键参数保持缺失；建议值保持待确认。至少一个可信尺寸或明确获准的概念尺度用于图片比例校准。
 
 `preflight_design_brief` 只校验**已声明的参数**。`ready_for_modeling:true` 不代表图片已分析、所有条件充分、真人已同意或允许修改当前文档。用户对具体参数的确认、实时会话保护和模型验收分别处理。参见 [工作流与 brief 示例](docs/workflows.md)。
