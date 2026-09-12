@@ -56,3 +56,19 @@
 - `QUEUE_*` 先查 `queue_diagnostics` 并等待或检查原任务；不自动删除锁、请求或响应。
 - 超时、`MUTATION_RECOVERY_REQUIRED` 或 outcome unknown 先 `resume_agent_task`；不要生成新幂等键重放，不并行向同一模型发变更。
 - 工具 `retryable:true` 只是错误分类，不表示重复写入安全。保留服务器的操作回执和恢复条件。
+
+
+## 极速迭代与性能开销抑制规范 (Fast Preview & In-Place Mutation)
+
+### 1. 单图快速预览原则
+- 草稿、探索与日常修改阶段，**默认只抓取 1 张关键视口快照**；
+- 严禁在未经用户明确要求时一次性抓取多角度视口，避免数十秒的漫长等待。
+
+### 2. 调试期默认禁用全屏阴影
+- 调试阶段一律设置 `shadow: { display: false }`；
+- 太阳光影追踪与全屏抗锯齿是主要耗时大头（每个视口耗时 4~6 秒），关闭后仅需 0.5 秒即可完成帧捕获；仅在最终整体交付时按用户需求开启高质量阴影。
+
+### 3. 修改阶段严禁从 0 清空重建 (In-place Mutation)
+- 初次生成时必须将业务场景解耦为独立组件（如 `Comp_Bench`、`Comp_Tree`、`Comp_Plaza`）；
+- 修改时严禁直接调用全盘清空的 `reset_model`；
+- 必须通过增量修改（In-place Edit / Delta Patch）就地更新指定组件、材质或形体参数，保护用户的现场修改与历史撤销栈。
