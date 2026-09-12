@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-# Modified 2026-09-12: multi-year queue transport and pre-mutation API checks.
+# Modified 2026-09-12: multi-year queue transport, pre-mutation API checks,
+# and Ruby 2.5-compatible exclusive transaction diagnostic writes.
 
 require 'json'
 require 'fileutils'
@@ -497,7 +498,7 @@ module AlmaSketchupMCP
         'message' => error.message.to_s, 'backtrace' => Array(error.backtrace).first(24),
         'committed' => committed, 'commit_attempted' => commit_attempted,
         'abort_succeeded' => abort_succeeded, 'recorded_at' => Time.now.utc.iso8601 }
-      File.open(File.join(directory, "#{SecureRandom.uuid}.json"), 'wx', 0o600) { |file| file.write(JSON.pretty_generate(diagnostic)) }
+      File.open(File.join(directory, "#{SecureRandom.uuid}.json"), File::WRONLY | File::CREAT | File::EXCL, 0o600) { |file| file.write(JSON.pretty_generate(diagnostic)) }
     rescue StandardError
       # Diagnostic persistence must never change the original failure outcome.
       nil

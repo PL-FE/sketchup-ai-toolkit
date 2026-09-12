@@ -47,5 +47,21 @@ Dir.mktmpdir('sketchup-plugin-transport-') do |temporary|
   rescue AlmaSketchupMCP::VersionAdapter::CompatibilityError
     raise 'Unsupported API reached model before rejection' unless model_access.zero?
   end
+  # A failed native transaction must still retain its diagnostic on Ruby 2.5.
+  transaction_model = Object.new
+  aborts = 0
+  transaction_model.define_singleton_method(:start_operation) { |_name, _disable_ui| true }
+  transaction_model.define_singleton_method(:abort_operation) { aborts += 1; true }
+  transaction_model.define_singleton_method(:commit_operation) { raise 'Failed transaction attempted commit' }
+  begin
+    bridge.with_atomic_model_transaction(transaction_model, 'compatibility failure probe') { raise 'intentional geometry failure' }
+    raise 'Failed transaction was accepted'
+  rescue AlmaSketchupMCP::QueueOperationError => error
+    raise 'Failure outcome changed' unless error.details['commit_state'] == 'not_committed' && aborts == 1
+  end
+  diagnostics = Dir[File.join(bridge::STATE_DIR, 'audit', 'transaction-failures', '*.json')]
+  raise 'Transaction failure diagnostic is missing' unless diagnostics.length == 1
+  diagnostic = JSON.parse(File.read(diagnostics.first))
+  raise 'Diagnostic lost the original error' unless diagnostic['message'] == 'intentional geometry failure' && diagnostic['abort_succeeded'] == true
 end
 puts "Ruby #{RUBY_VERSION}: production plugin transport and pre-mutation guards passed (host doubles, no native geometry test)."

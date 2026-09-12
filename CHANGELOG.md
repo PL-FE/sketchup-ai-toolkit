@@ -8,3 +8,5 @@
 - 增加 Windows/macOS 安装、备份、客户端配置生成、Skill 安装、自检与源码/RBZ 打包脚本；桥接默认自动启动。
 - 增加离线和传输回归、CI、庭院示例、中文 README 与可复制 AI 安装提示词。
 - 更新 sharp 与 fast-uri 的锁定依赖。真机兼容矩阵仍待验收，详见 docs/testing.md。
+- 首次 GitHub CI 发现并修复 snapshot 中 Ruby 2.6 的无终点范围语法；改用 Ruby 2.5 支持的数组遍历，并将后续 Ruby 失败详情输出到 CI 注释。
+- 事务失败日志改用 Ruby 2.5 支持的独占文件创建标志，并验证原始错误及回滚状态被保留。

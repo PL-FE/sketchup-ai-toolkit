@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+# Modified for SketchUp AI Toolkit, 2026-09-12: use Ruby 2.5-compatible
+# array traversal instead of the Ruby 2.6 endless range syntax.
 
 module AlmaSketchupMCP
   extend self
@@ -182,7 +184,7 @@ module AlmaSketchupMCP
       end
     end
     groups.each_with_index do |group, index|
-      groups[(index + 1)..].to_a.each do |other|
+      groups.drop(index + 1).each do |other|
         if boxes_intersect?(group['bounding_box'], other['bounding_box'])
           group_ref = snapshot_item_reference(group)
           other_ref = snapshot_item_reference(other)
