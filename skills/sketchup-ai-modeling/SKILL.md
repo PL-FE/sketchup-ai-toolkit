@@ -1,6 +1,6 @@
 ---
 name: sketchup-ai-modeling
-description: "Create and revise editable SketchUp models through an available MCP, especially from reference images, architectural dimensions, or landscape briefs. Establish parameter provenance and user confirmation, discover version-specific tools, build in stages, and verify native geometry and views. Use for SketchUp modeling work, not generic image generation."
+description: "Create and revise editable SketchUp models through an available MCP, especially from reference images, architectural dimensions, or landscape briefs. Generate visual previews for user confirmation before new image-driven modeling, establish parameter provenance, discover version-specific tools, build in stages, and verify native geometry and views. Use for SketchUp modeling work, not generic image generation."
 ---
 
 # SketchUp AI 建模
@@ -16,6 +16,16 @@ description: "Create and revise editable SketchUp models through an available MC
 - 图片、草图、平面图、现场照片：[图片建模](references/image-modeling.md)。
 - 场地、地形、园路、种植和景观构筑物：[景观工作流](references/landscape.md)。
 - 建筑体量、楼层、墙体、洞口和屋面：[建筑工作流](references/architecture.md)。
+
+## 图片预览确认在建模之前
+
+对于图片驱动的新建模型和需要设计外形的新方案，先按[先出图确认，再按图建模](references/preview-confirmation.md)生成可见预览，获得用户对具体图片和必要参数的确认，再调用 MCP 创建几何。检查整张原图，包含用户范围内未标注的对象。按实际构成出图：多组件组合展示整体效果及主要局部组件，并用编号对应；只有一个整体时只展示整体，不强制拆件。三视图、轴测图及局部详图按结构表达需要选择，不固定视图数量；多视图时核对结构一致性。
+
+预览以快速迭代为优先：用户可持续修改，先更新受影响的整体/局部预览，确认版本后再进入 SketchUp。无生图能力、额度不足或等待成本过高时，按预览流程使用本地 HTML、SVG、Canvas 或可用的轻量三维能力生成可见方案；不得仅交文字提示词后停止。
+
+图片确认与参数确认可以合并进行，但认可外观不等于认可尚未展示的尺寸或隐藏构造。保存确认图版本与对象、参数的对应关系，后续据此建模及对照验收。已确认方案的复用或纯参数修改不重复索取相同确认；本次明确的流程调整以用户指令为准。
+
+用于反复调整建筑和组合设施时，优先复用内置 [Three.js 预览模板](references/threejs-preview.md)，通过 `scripts/preview_server.py` 复制到项目并启动。模板支持离线运行、整体与局部、按需三视图、组件参数调整及 JSON/图片导出；详情和数据约定见该参考。
 
 ## 参数确认是建模前条件
 

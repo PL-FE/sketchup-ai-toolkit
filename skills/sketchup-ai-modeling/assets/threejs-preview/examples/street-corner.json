@@ -1,0 +1,11 @@
+{
+  "schemaVersion":1,"id":"street-corner-demo","title":"街角建筑群 · 模板演示","units":"m","revision":0,
+  "notes":"多建筑场景演示，全部尺寸和布局为未确认假设。楼层线仅示意；道路、立面和细节需按项目深化。",
+  "components":[
+    {"id":"B01","name":"写字楼 A","type":"building","position":[-12,0,-12],"rotation":0,"color":"#76959b","params":{"width":12,"height":36,"depth":10,"floorHeight":3.6},"provenance":{"source":"assumed","status":"pending"}},
+    {"id":"B02","name":"写字楼 B","type":"building","position":[9,0,-12],"rotation":0,"color":"#98aaa5","params":{"width":10,"height":25.2,"depth":10,"floorHeight":3.6},"provenance":{"source":"assumed","status":"pending"}},
+    {"id":"B03","name":"写字楼 C","type":"building","position":[-12,0,9],"rotation":0,"color":"#b4b4a8","params":{"width":12,"height":18,"depth":10,"floorHeight":3.6},"provenance":{"source":"assumed","status":"pending"}},
+    {"id":"P01","name":"广场休憩亭","type":"pavilion","position":[8,0,7],"rotation":0,"color":"#ec752b","params":{"width":5,"height":3,"depth":4,"post":0.2,"roof":0.15},"provenance":{"source":"assumed","status":"pending"}},
+    {"id":"S01","name":"亭内长椅","type":"bench","position":[8,0,7],"rotation":0,"color":"#ed9549","params":{"width":3,"height":0.48,"depth":0.55,"thickness":0.08},"provenance":{"source":"assumed","status":"pending"}}
+  ],"review":{"status":"pending","note":"仅演示，不代表确认"}
+}

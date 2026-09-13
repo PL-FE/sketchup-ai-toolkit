@@ -50,6 +50,17 @@ Project pages:
 - ajv: <https://ajv.js.org/>
 - sharp and libvips packaging information: <https://sharp.pixelplumbing.com/>
 
+## Offline Three.js preview assets
+
+The modeling skill bundles Three.js **0.180.0** browser modules and
+`OrbitControls` under `skills/sketchup-ai-modeling/assets/threejs-preview/vendor/`.
+These assets are licensed under **MIT**. The full upstream license is preserved
+in `THREE-LICENSE.txt`; `provenance.json` records the npm archive URL and verified
+SHA-512 integrity. They are static, locally served preview assets and do not add
+a server runtime dependency or make CDN requests.
+
+Upstream: <https://github.com/mrdoob/three.js>
+
 ## Bundled Node.js
 
 This fork's source ZIP and Ruby RBZ do not include Node.js, node_modules, sharp

@@ -1,4 +1,4 @@
 interface:
   display_name: "SketchUp AI 建模"
-  short_description: "图片、景观与建筑建模：参数确认、版本适配、可编辑构件及实测验收"
-  default_prompt: "使用 $sketchup-ai-modeling 先核对图片和尺寸，列出待确认参数，再创建可编辑的 SketchUp 模型。"
+  short_description: "图片、景观与建筑建模：快速预览迭代，支持本地展示，确认后再建模"
+  default_prompt: "使用 $sketchup-ai-modeling 检查完整参考图，先按实际构成生成预览（多组件出整体及局部，单一整体只出整体，按需补三视图），支持持续局部修改，生图不可用或额度不足时用本地 HTML 等方式展示，待用户确认当前效果与必要参数后，再通过 MCP 依据确认图创建并核验可编辑的 SketchUp 模型。"
