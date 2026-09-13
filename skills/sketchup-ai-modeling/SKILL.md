@@ -16,6 +16,7 @@ description: "Create and revise editable SketchUp models through an available MC
 - 图片、草图、平面图、现场照片：[图片建模](references/image-modeling.md)。
 - 场地、地形、园路、种植和景观构筑物：[景观工作流](references/landscape.md)。
 - 建筑体量、楼层、墙体、洞口和屋面：[建筑工作流](references/architecture.md)。
+- 构造深化、接触面/立面分界或安装衔接问题：[构件连接与深化检查](references/construction-readiness.md)。
 
 ## 图片预览确认在建模之前
 

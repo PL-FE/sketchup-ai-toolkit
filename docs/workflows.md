@@ -17,6 +17,8 @@ Codex 可从已配置的技能目录加载整个 `sketchup-ai-modeling` 文件�
 
 如果用户只要求方案或代码，执行到可审查结果即可，不启动实时建模。缺失信息期间仍可进行只读分析与离线预览。
 
+涉及构造深化或接触面、立面分界与安装衔接问题时，参照[构件连接与深化检查](../skills/sketchup-ai-modeling/references/construction-readiness.md)。先明确构件与连接关系，再用原生测量、立面和节点剖面核对；零包围盒间隙不等于实际节点合理。该指引不是新增的自动施工验收能力。
+
 ## 参数来源与确认
 
 使用 [design-brief.example.json](../examples/design-brief.example.json) 演示参数预检。它是一段**虚构的教学需求**：假设用户只给出了 12 m × 9 m 场地，并希望参考图片建一个庭院。其余参数尚待核对；它不能作为真实项目或已获批准的设计输入直接执行。
